@@ -1,0 +1,37 @@
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Campaigns</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="index.html">Home</a>
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Campaigns</strong>
+            </li>
+        </ol>
+    </div>
+
+    <div class="col-lg-2 float-right">
+        <h2></h2>
+        <h2></h2>
+        <button type="button" class="btn btn-block btn-outline btn-primary">New Campaign</button>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-4" *ngFor="let campaign of campaigns">
+
+            <app-campaign-product-view [campaign]="campaign">
+            </app-campaign-product-view>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

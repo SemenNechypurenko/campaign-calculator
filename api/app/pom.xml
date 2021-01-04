@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.gramant.sitefilter</groupId>
+    <artifactId>app</artifactId>
+    <version>1.0.0</version>
+    <name>dentsu-campaign-calculator-app</name>
+    <description>Dentsu campaign calculator app</description>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.4.0</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+
+    <properties>
+        <java.version>11</java.version>
+        <build.number>SNAPSHOT</build.number>
+        <skipSigning>true</skipSigning>
+        <jarName>sitefilter</jarName>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-hateoas</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jooq</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>ru.yandex.clickhouse</groupId>
+            <artifactId>clickhouse-jdbc</artifactId>
+            <version>0.2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <!--		<dependency>-->
+        <!--			<groupId>org.springframework.security</groupId>-->
+        <!--			<artifactId>spring-security-test</artifactId>-->
+        <!--			<scope>test</scope>-->
+        <!--		</dependency>-->
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>2.0.2</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.17</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-csv -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>${jarName}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <executable>true</executable>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>de.dentrassi.maven</groupId>
+                <artifactId>rpm</artifactId>
+                <version>1.5.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>rpm</goal>
+                        </goals>
+                        <configuration>
+                            <packageName>${jarName}</packageName>
+                            <release>${build.number}</release>
+                            <attach>false</attach>
+                            <group>Application/Misc</group>
+
+                            <signature>
+                                <keyId>${keyId}</keyId>
+                                <keyringFile>${user.home}/.gnupg/secring.gpg</keyringFile>
+                                <passphrase>${passphrase}</passphrase>
+                                <hashAlgorithm>SHA1</hashAlgorithm>
+                                <skip>${skipSigning}</skip>
+                            </signature>
+
+                            <rulesets>
+                                <ruleset>
+                                    <id>default</id>
+                                    <rules>
+                                        <rule>
+                                            <when>
+                                                <type>directory</type>
+                                            </when>
+                                            <mode>0750</mode>
+                                        </rule>
+                                        <rule>
+                                            <when>
+                                                <prefix>/etc/</prefix>
+                                            </when>
+                                            <configuration>true</configuration>
+                                        </rule>
+                                        <rule>
+                                            <when>
+                                                <type>file</type>
+                                            </when>
+                                            <mode>0644</mode>
+                                        </rule>
+                                        <rule>
+                                            <when>
+                                                <type>file</type>
+                                                <prefix>/opt/dentsu_campaign_calculator</prefix>
+                                            </when>
+                                            <user>root</user>
+                                            <group>root</group>
+                                        </rule>
+                                        <rule>
+                                            <when>
+                                                <type>file</type>
+                                                <prefix>/var/log/dentsu_campaign_calculator</prefix>
+                                            </when>
+                                            <user>root</user>
+                                            <group>root</group>
+                                        </rule>
+                                    </rules>
+                                </ruleset>
+                            </rulesets>
+
+                            <entries>
+                                <entry>
+                                    <name>/opt/dentsu_campaign_calculator</name>
+                                    <directory>true</directory>
+                                    <user>root</user>
+                                    <group>root</group>
+                                    <mode>0755</mode>
+                                </entry>
+                                <entry>
+                                    <name>/opt/sitefilter/api</name>
+                                    <directory>true</directory>
+                                    <user>root</user>
+                                    <group>root</group>
+                                    <mode>0755</mode>
+                                </entry>
+                                <entry>
+                                    <name>/opt/sitefilter/api/sitefilter.jar</name>
+                                    <file>target/sitefilter.jar</file>
+                                    <user>root</user>
+                                    <group>root</group>
+                                    <mode>0700</mode>
+                                    <ruleset>default</ruleset>
+                                </entry>
+                                <entry>
+                                    <name>/opt/sitefilter/api/sitefilter.conf</name>
+                                    <file>rpmbuild/opt/sitefilter/api/java.conf</file>
+                                    <user>root</user>
+                                    <group>root</group>
+                                    <mode>0600</mode>
+                                    <configuration>true</configuration>
+                                    <noreplace>true</noreplace>
+                                </entry>
+                                <entry>
+                                    <name>/opt/sitefilter/api/application.yml</name>
+                                    <file>rpmbuild/opt/sitefilter/api/application.yml</file>
+                                    <user>root</user>
+                                    <group>root</group>
+                                    <mode>0600</mode>
+                                    <configuration>true</configuration>
+                                    <noreplace>true</noreplace>
+                                </entry>
+                                <entry>
+                                    <name>/var/log/sitefilter</name>
+                                    <directory>true</directory>
+                                    <user>root</user>
+                                    <group>root</group>
+                                    <mode>0755</mode>
+                                </entry>
+                                <entry>
+                                    <name>/usr/lib/systemd/system/sitefilter.service</name>
+                                    <file>rpmbuild/usr/lib/systemd/system/sitefilter.service</file>
+                                    <user>root</user>
+                                    <group>root</group>
+                                    <mode>0700</mode>
+                                    <noreplace>true</noreplace>
+                                </entry>
+                                <entry>
+                                    <name>/etc/nginx/conf.d/sitefilter.conf</name>
+                                    <file>rpmbuild/etc/nginx/conf.d/sitefilter.conf</file>
+                                    <user>root</user>
+                                    <group>root</group>
+                                    <mode>0600</mode>
+                                    <configuration>true</configuration>
+                                    <noreplace>true</noreplace>
+                                </entry>
+                                <entry>
+                                    <name>/etc/systemd/system/nginx.service.d/limits.conf</name>
+                                    <file>rpmbuild/etc/systemd/system/nginx.service.d/limits.conf</file>
+                                    <user>root</user>
+                                    <group>root</group>
+                                    <mode>0600</mode>
+                                    <configuration>true</configuration>
+                                    <noreplace>true</noreplace>
+                                </entry>
+                                <entry>
+                                    <name>/etc/nginx/.htpasswd</name>
+                                    <file>rpmbuild/etc/nginx/.htpasswd</file>
+                                    <user>root</user>
+                                    <group>root</group>
+                                    <mode>0644</mode>
+                                    <configuration>true</configuration>
+                                    <noreplace>true</noreplace>
+                                </entry>
+                            </entries>
+
+                            <afterInstallation>
+                                <file>rpmbuild/afterInstall.sh</file>
+                            </afterInstallation>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--			<plugin>-->
+            <!--				<groupId>org.jooq</groupId>-->
+            <!--				<artifactId>jooq-codegen-maven</artifactId>-->
+            <!--				<executions>-->
+            <!--					<execution>-->
+            <!--						<phase>generate-sources</phase>-->
+            <!--						<goals>-->
+            <!--							<goal>generate</goal>-->
+            <!--						</goals>-->
+            <!--					</execution>-->
+            <!--				</executions>-->
+            <!--				<dependencies>-->
+            <!--					<dependency>-->
+            <!--						<groupId>org.jooq</groupId>-->
+            <!--						<artifactId>jooq</artifactId>-->
+            <!--						<version>${jooq.version}</version>-->
+            <!--					</dependency>-->
+            <!--					<dependency>-->
+            <!--						<groupId>org.jooq</groupId>-->
+            <!--						<artifactId>jooq-meta</artifactId>-->
+            <!--						<version>${jooq.version}</version>-->
+            <!--					</dependency>-->
+            <!--					<dependency>-->
+            <!--						<groupId>org.jooq</groupId>-->
+            <!--						<artifactId>jooq-codegen</artifactId>-->
+            <!--						<version>${jooq.version}</version>-->
+            <!--					</dependency>-->
+            <!--					<dependency>-->
+            <!--						<groupId>org.jooq</groupId>-->
+            <!--						<artifactId>jooq-meta-extensions-liquibase</artifactId>-->
+            <!--						<version>${jooq.version}</version>-->
+            <!--					</dependency>-->
+
+
+            <!--				</dependencies>-->
+            <!--				<configuration>-->
+            <!--					<generator>-->
+            <!--						<database>-->
+            <!--							<name>org.jooq.meta.extensions.liquibase.LiquibaseDatabase</name>-->
+            <!--							<includes>.*</includes>-->
+
+            <!--                            <excludes>-->
+            <!--                                dentsuCampaignCalculator.schemas.public.routines.calculation_modal_increment_and_set_version-->
+            <!--                                | dentsuCampaignCalculator.schemas.public.routines.calculation_modal_increment_and_set_version()-->
+            <!--                                | .calculation_modal_increment_and_set_version-->
+            <!--                            </excludes>-->
+            <!--							<properties>-->
+
+            <!--								&lt;!&ndash; Specify the location of your XML script. &ndash;&gt;-->
+            <!--								<property>-->
+            <!--									<key>scripts</key>-->
+            <!--									<value>app/src/main/resources/db/changelog/master.xml</value>-->
+            <!--								</property>-->
+
+            <!--								&lt;!&ndash; Whether you want to include liquibase tables in generated output-->
+            <!--                                - false (default)-->
+            <!--                                - true: includes DATABASECHANGELOG and DATABASECHANGELOGLOCK tables &ndash;&gt;-->
+            <!--								<property>-->
+            <!--									<key>includeLiquibaseTables</key>-->
+            <!--									<value>false</value>-->
+            <!--								</property>-->
+
+            <!--								&lt;!&ndash; Properties prefixed "database." will be passed on to the liquibase.database.Database class-->
+            <!--                                     if a matching setter is found &ndash;&gt;-->
+            <!--								<property>-->
+            <!--									<key>database.liquibaseSchemaName</key>-->
+            <!--									<value>public</value>-->
+            <!--								</property>-->
+
+            <!--								&lt;!&ndash; The property "changeLogParameters.contexts" will be passed on to the-->
+            <!--                                     liquibase.database.Database.update() call (jOOQ 3.13.2+).-->
+            <!--                                     See https://www.liquibase.org/documentation/contexts.html &ndash;&gt;-->
+            <!--								<property>-->
+            <!--									<key>changeLogParameters.contexts</key>-->
+            <!--									<value>!test</value>-->
+            <!--								</property>-->
+            <!--							</properties>-->
+            <!--						</database>-->
+            <!--						<generate>-->
+            <!--							<records>true</records>-->
+            <!--						</generate>-->
+            <!--						<target>-->
+            <!--							<packageName>com.gramant.dentsuCampaignCalculator.adapters.dbdomain.data</packageName>-->
+            <!--							<directory>src/main/java</directory>-->
+            <!--						</target>-->
+            <!--					</generator>-->
+            <!--				</configuration>-->
+            <!--			</plugin>-->
+            <plugin>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen-maven</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jooq</groupId>
+                        <artifactId>jooq</artifactId>
+                        <version>${jooq.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jooq</groupId>
+                        <artifactId>jooq-meta</artifactId>
+                        <version>${jooq.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jooq</groupId>
+                        <artifactId>jooq-codegen</artifactId>
+                        <version>${jooq.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jooq</groupId>
+                        <artifactId>jooq-meta-extensions-liquibase</artifactId>
+                        <version>${jooq.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>generate-postgre</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <!--Insert your DB configuration-->
+                            <jdbc>
+                                <driver>org.postgresql.Driver</driver>
+                                <url>jdbc:postgresql://localhost:54321/dentsuCampaignCalculator</url>
+                                <user>dentsuCampaignCalculator_admin</user>
+                                <password>password</password>
+                            </jdbc>
+                            <generator>
+                                <database>
+                                    <name>
+                                        org.jooq.meta.postgres.PostgresDatabase
+                                    </name>
+                                    <includes>.*</includes>
+                                    <excludes>Databasechangelog | Databasechangeloglock</excludes>
+                                    <inputSchema>public</inputSchema>
+
+                                    <forcedTypes>
+                                        <forcedType>
+
+                                            <userType>com.gramant.dentsuCampaignCalculator.domain.CalculationMethod</userType>
+
+                                            <!-- Associate that custom type with your converter. -->
+                                            <converter>com.gramant.dentsuCampaignCalculator.adapters.db.converter.StringToCalculationConverter</converter>
+
+                                            <!-- These are the same as for type rewriting -->
+                                            <includeExpression>.*\.calculation</includeExpression>
+                                            <includeTypes>.*</includeTypes>
+
+
+                                        </forcedType>
+                                    </forcedTypes>
+                                </database>
+                                <generate>
+                                    <pojos>true</pojos>
+                                    <pojosEqualsAndHashCode>
+                                        true
+                                    </pojosEqualsAndHashCode>
+                                    <javaTimeTypes>true</javaTimeTypes>
+                                    <fluentSetters>true</fluentSetters>
+                                </generate>
+                                <target>
+                                    <packageName>com.gramant.dentsuCampaignCalculator.adapters.dbdomain.data
+                                    </packageName>
+                                    <directory>src/main/java</directory>
+                                </target>
+
+                            </generator>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

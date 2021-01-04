@@ -1,0 +1,9 @@
+<VAST version="3.0" xmlns:xsi="//www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vast.xsd">
+    <Ad id="1">
+        <InLine>
+            <AdSystem>Monitored VAST</AdSystem>
+            <AdTitle>Monitored VAST</AdTitle>
+            <Description>Monitored VAST</Description>
+        </InLine>
+    </Ad>
+</VAST>

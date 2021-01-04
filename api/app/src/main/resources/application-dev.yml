@@ -1,0 +1,21 @@
+app:
+  allowedOrigins: http://localhost:4200
+  baseUrl: http://localhost:8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:54321/dentsuCampaignCalculator
+    username: dentsuCampaignCalculator_admin
+    password: password
+    driver-class-name: org.postgresql.Driver
+
+logging:
+  file:
+    path: ./
+  level:
+    org.jooq: DEBUG
+    com.gramant.sitefilter: DEBUG
+  pattern:
+    console: '%d{HH:mm:ss.SSS} [%thread] [%X] %-5level %logger{36} - %msg%n'
+
+

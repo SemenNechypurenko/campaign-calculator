@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'local_maven'
+    }
+
+    environment {
+        server='195.201.142.97'
+        rpmName='sitefilter'
+        rpmArchivePath="${WORKSPACE}/api/app/target/sitefilter-1.0.0-${BUILD_NUMBER}.noarch.rpm"
+        yumRepo='/srv/repos/apps'
+        yumKeep=3
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                dir("api") {
+                    sh "mvn -B -DskipTests clean package -Dbuild.number=${BUILD_NUMBER}"
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                dir("api") {
+                    sh 'mvn test'
+                }
+            }
+        }
+        stage('Deliver') {
+            steps {
+                dir("api") {
+                    sh "chmod +x -R ."
+                    sh 'app/jenkins/deliver.sh'
+                }
+            }
+        }
+    }
+}

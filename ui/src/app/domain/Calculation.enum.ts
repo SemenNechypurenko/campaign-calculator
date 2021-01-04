@@ -1,0 +1,3 @@
+export enum Calculation {
+    ATTRIBUTION = 'ATTRIBUTION', ECONOMETRIC = 'ECONOMETRIC', MIXED = 'MIXED'
+}

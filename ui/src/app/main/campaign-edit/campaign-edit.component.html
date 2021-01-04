@@ -1,0 +1,113 @@
+<div class="col-lg-6">
+    <div class="ibox ">
+        <div class="ibox-title">
+            <h3>{{ campaign?.name }}</h3>
+        </div>
+        <div class="ibox-content">
+            <form [formGroup]="checkoutForm">
+                <!--                <h1>{{ campaign?.name }}</h1>-->
+                <div class="form-group row">
+                    <label class="col-lg-4 col-form-label">Calculation method:</label>
+                    <div class="col-lg-8">
+                        <div>
+                            <label>
+                                <input type="radio" checked="" value="ATTRIBUTION" id="optionsRadios11"
+                                       name="optionsRadios"
+                                       (change)="onItemChanged('ATTRIBUTION')"
+                                       *ngIf="calculationMethod === 'ATTRIBUTION'">
+                                <input type="radio" value="ATTRIBUTION" id="optionsRadios12"
+                                       name="optionsRadios"
+                                       (change)="onItemChanged('ATTRIBUTION')"
+                                       git init          *ngIf="calculationMethod !== 'ATTRIBUTION'">
+                                ATTRIBUTION</label>
+                        </div>
+
+                        <div>
+                            <label>
+                                <input type="radio" checked="" value="ECONOMETRIC" id="optionsRadios21"
+                                       name="optionsRadios"
+                                       (change)="onItemChanged('ECONOMETRIC')"
+                                       *ngIf="calculationMethod === 'ECONOMETRIC'">
+                                <input type="radio" value="ECONOMETRIC" id="optionsRadios22" name="optionsRadios"
+                                       (change)="onItemChanged('ECONOMETRIC')"
+                                       *ngIf="calculationMethod !== 'ECONOMETRIC'">
+                                ECONOMETRIC</label>
+                        </div>
+
+                        <div>
+                            <label>
+                                <input type="radio" checked="" value="MIXED" id="optionsRadios31" name="optionsRadios"
+                                       (change)="onItemChanged('MIXED')"
+                                       *ngIf="calculationMethod === 'MIXED'">
+                                <input type="radio" value="MIXED" id="optionsRadios32" name="optionsRadios"
+                                       (change)="onItemChanged('MIXED')"
+                                       *ngIf="calculationMethod !== 'MIXED'">
+                                MIXED</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row"
+                     *ngIf="calculationMethod === 'ATTRIBUTION' || calculationMethod === 'MIXED'">
+                    <label class="col-lg-2 col-form-label">Budget:</label>
+                    <div class="col-lg-10">
+                        <input
+                            type="text"
+                            placeholder={{campaign?.budget}}
+                            class="form-control"
+                            formControlName="budget"
+                            [ngClass]="{'is-invalid': getControl('budget').invalid
+                                       && (getControl('budget').touched || getControl('budget').errors.pattern)}"
+                        />
+
+                        <span class="text-danger"
+                              *ngIf="getControl('budget').invalid">Value should be a number and greater than 0</span>
+                    </div>
+                </div>
+
+                <div class="form-group row"
+                     *ngIf="calculationMethod === 'ECONOMETRIC' || calculationMethod === 'MIXED'">
+                    <label class="col-lg-2 col-form-label">Weeks:</label>
+                    <div class="col-lg-10">
+                        <input
+                            type="text"
+                            placeholder={{campaign?.weeks}}
+                            class="form-control"
+                            formControlName="weeks"
+                            [ngClass]="{'is-invalid': getControl('weeks').invalid
+                                       && (getControl('weeks').touched || getControl('weeks').errors.pattern)}"
+                        />
+
+                        <span class="text-danger"
+                              *ngIf="getControl('weeks').invalid">Value should be a number and greater than 0</span>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-lg-12">
+                        <a class="btn btn-primary float-right"
+                           (click)="calculate()"
+                        >Apply</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-lg-6">
+    <div class="ibox ">
+        <div class="form-group row">
+            <div class="col-lg-12">
+                <a class="btn btn-default float-left"
+                   [routerLink]="['/campaigns']"
+                >Back</a>
+
+                <a class="btn btn-success float-right"
+                   (click)="saveCampaign()"
+                >Save</a>
+            </div>
+        </div>
+    </div>
+</div>

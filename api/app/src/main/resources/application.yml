@@ -1,0 +1,49 @@
+server:
+  address: 0.0.0.0
+  port: 8080
+
+spring:
+  application:
+    name: dentsuCampaignCalculator
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+  jackson:
+    mapper.accept-case-insensitive-enums: true
+    serialization.write-dates-as-timestamps: false
+
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/master.xml
+    default-schema: public
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/dentsuCampaignCalculator
+    username: dentsuCampaignCalculator_admin
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jooq:
+    sql-dialect: POSTGRES
+
+app:
+  allowedOrigins: http://sitefilter.gramant.ru,https://sitefilter.gramant.ru
+  baseUrl: https://sitefilter.gramant.ru
+
+
+logging:
+  file:
+    path: /var/log/sitefilter
+    max-history: 7
+    max-size: 50MB
+    total-size-cap: 500MB
+  pattern:
+    rolling-file-name: '${LOG_FILE}.%d{yyyy-MM-dd}.%i.log.gz'
+    dateformat: 'yyyy-MM-dd HH:mm:ss.SSS'
+    file: '%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n'
+  level:
+    org.jooq: DEBUG
+    org.springframework.jdbc.core: TRACE
+    com.gramant.sitefilter: DEBUG
+

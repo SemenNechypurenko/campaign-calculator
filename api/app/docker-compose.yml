@@ -1,0 +1,9 @@
+dentsuCampaignCalculator-db:
+ container_name: dentsuCampaignCalculator
+ image: sameersbn/postgresql:10-2
+ ports:
+  - "54321:5432"
+ environment:
+  - DB_USER=dentsuCampaignCalculator_admin
+  - DB_PASS=password
+  - DB_NAME=dentsuCampaignCalculator

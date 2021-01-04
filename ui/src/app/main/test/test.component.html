@@ -1,0 +1,52 @@
+<div class="row wrapper border-bottom white-bg page-heading m-t-md">
+    <div class="col-lg-10">
+        <h2>Загрузка файла</h2>
+        <!--        <ol class="breadcrumb">-->
+        <!--            <li class="breadcrumb-item">-->
+        <!--                <a [routerLink]="['/statistics']">Фильтры</a>-->
+        <!--            </li>-->
+        <!--            <li class="breadcrumb-item active">-->
+        <!--                <strong *ngIf="!filterId">Новый фильтр</strong>-->
+        <!--                <strong *ngIf="filterId && filter">{{filter.name}}</strong>-->
+        <!--            </li>-->
+        <!--        </ol>-->
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeIn">
+
+    <div class="row">
+        <div class="col">
+            <div class="ibox">
+                <div class="ibox-title">Состояние базы данных</div>
+                <div class="ibox-content">
+                    <div class=" m-l-md">
+                        <app-spinner [show]="getCountLinesInDbRequestStatuses.isRequest">
+                            <span class="h5 font-bold m-t block">{{countLinesInDb}}</span>
+                        </app-spinner>
+                        <small class="text-muted m-b block">Строк в базе данных</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="ibox">
+                <div class="ibox-title">Загрузка файла:</div>
+                <div class="ibox-content">
+                    <div class="input-group">
+                        <div class="custom-file">
+                            <input id="inputGroupFile01" type="file" class="custom-file-input" #fileImport
+                                   (change)="uploadFile($event.target.files)">
+                            <label class="custom-file-label" for="inputGroupFile01">Для загрузки статистики выберите
+                                файл:</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
